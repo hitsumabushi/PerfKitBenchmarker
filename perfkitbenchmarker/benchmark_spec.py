@@ -58,6 +58,11 @@ DEFAULTS = {
         IMAGE: None,
         MACHINE_TYPE: 'm3.medium',
         ZONE: 'us-east-1a'
+    },
+    NIFTY: {
+        IMAGE: '18078', # Ubuntu 14.04
+        MACHINE_TYPE: 'small4', # 1vCPU, 4GB Mem
+        ZONE: 'east-14' # East-side of Japan
     }
 }
 CLASSES = {
@@ -84,6 +89,12 @@ CLASSES = {
         },
         NETWORK: aws_network.AwsNetwork,
         FIREWALL: aws_network.AwsFirewall
+    },
+    NIFTY: {
+        VIRTUAL_MACHINE: {
+        },
+        NETWORK: ,
+        FIREWALL: ,
     }
 }
 STANDARD = 'standard'

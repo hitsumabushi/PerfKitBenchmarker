@@ -26,6 +26,8 @@ from perfkitbenchmarker.aws import aws_network
 from perfkitbenchmarker.aws import aws_virtual_machine
 from perfkitbenchmarker.azure import azure_network
 from perfkitbenchmarker.azure import azure_virtual_machine
+from perfkitbenchmarker.nifty import nifty_network
+from perfkitbenchmarker.nifty import nifty_virtual_machine
 from perfkitbenchmarker.deployment.config import config_reader
 import perfkitbenchmarker.deployment.shared.ini_constants as ini_constants
 from perfkitbenchmarker.gcp import gce_network
@@ -34,6 +36,7 @@ from perfkitbenchmarker.gcp import gce_virtual_machine
 GCP = 'GCP'
 AZURE = 'Azure'
 AWS = 'AWS'
+NIFTY = 'NIFTY'
 DEBIAN = 'debian'
 RHEL = 'rhel'
 IMAGE = 'image'
@@ -92,9 +95,11 @@ CLASSES = {
     },
     NIFTY: {
         VIRTUAL_MACHINE: {
+            DEBIAN: nifty_virtual_machine.DebianBasedNiftyVirtualMachine,
+            RHEL: nifty_virtual_machine.RhelBasedNiftyVirtualMachine
         },
-        NETWORK: ,
-        FIREWALL: ,
+        NETWORK: nifty_network.NiftyNetwork,
+        FIREWALL: nifty_network.NiftyFirewall
     }
 }
 STANDARD = 'standard'
@@ -112,12 +117,15 @@ DISK_TYPE = {
     },
     AZURE: {
         STANDARD: None,  # Azure doesn't have a disk type option yet.
+    }, 
+    NIFTY: {
+        STANDARD: None,  # TODO : 3 type disks.
     }
 }
 
 FLAGS = flags.FLAGS
 
-flags.DEFINE_enum('cloud', GCP, [GCP, AZURE, AWS], 'Name of the cloud to use.')
+flags.DEFINE_enum('cloud', GCP, [GCP, AZURE, AWS, NIFTY], 'Name of the cloud to use.')
 
 SSH_PORT = 22
 

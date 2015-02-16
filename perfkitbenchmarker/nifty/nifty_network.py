@@ -3,7 +3,9 @@ from perfkitbenchmarker import network
 from perfkitbenchmarker import resource
 from perfkitbenchmarker import vm_util
 from perfkitbenchmarker.nifty import util
+import threading
 import os
+import re
 
 FLAGS = flags.FLAGS
 
@@ -19,7 +21,7 @@ class NiftyFirewall(network.BaseFirewall):
     self.project = project
     self._lock = threading.Lock()
     self.firewall_ports = []
-    self.firewall_name = re.sub(re.compile("[!-/:-@[-`{-~]"),'', project)
+    self.firewall_name = re.sub(re.compile('[!-/:-@[-`{-~]'),'', project)
 
   def __getstate__(self):
     """Implements getstate to allow pickling (since locks can't be pickled)."""
@@ -51,6 +53,8 @@ class NiftyFirewall(network.BaseFirewall):
             for inout in ['IN', 'OUT']:
                 firewall_cmd = [os.path.join(util.NIFTY_PATH,
                     '/bin/nifty-authorize-security-group-ingress'),
+                    '--access-key-id', "util.NIFTY_ACCESS_KEY",
+                    '--secret-key', "util.NIFTY_SECRET_KEY",
                     'firewall_name', '-p', port, '-s', '0.0.0.0/0',
                     '-P', protocol, '-in-out', inout
                     ]
@@ -64,6 +68,8 @@ class NiftyFirewall(network.BaseFirewall):
             for inout in ['IN', 'OUT']:
                 firewall_cmd = [os.path.join(util.NIFTY_PATH,
                     '/bin/nifty-revoke-security-group-ingress'),
+                    '--access-key-id', "util.NIFTY_ACCESS_KEY",
+                    '--secret-key', "util.NIFTY_SECRET_KEY",
                     'firewall_name', '-p', port, '-s', '0.0.0.0/0',
                     '-P', protocol, '-in-out', inout
                     ]

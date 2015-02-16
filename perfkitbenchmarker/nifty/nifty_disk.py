@@ -23,6 +23,8 @@ class NiftyDisk(disk.BaseDisk):
   def _Create(self):
     """Creates the disk."""
     create_cmd = [os.path.join(util.NIFTY_PATH, 'bin/nifty-create-volume'),
+                  '--access-key-id', "util.NIFTY_ACCESS_KEY",
+                  '--secret-key', "util.NIFTY_SECRET_KEY",
                   '--size=%s' % self.disk_size,
                   '--volume-type=%s' % self.disk_type]
     stdout, _ = vm_util.IssueRetryableCommand(create_cmd)
@@ -33,6 +35,8 @@ class NiftyDisk(disk.BaseDisk):
   def _Delete(self):
     """Deletes the disk."""
     delete_cmd = [os.path.join(util.NIFTY_PATH, 'bin/nifty-delete-volume'),
+                  '--access-key-id', "util.NIFTY_ACCESS_KEY",
+                  '--secret-key', "util.NIFTY_SECRET_KEY",
                   '--volume-id=%s' % self.id]
     vm_util.IssueRetryableCommand(delete_cmd)
 
@@ -51,12 +55,16 @@ class NiftyDisk(disk.BaseDisk):
       self.device_letter = min(NiftyDisk.vm_devices[self.attached_vm_id])
       NiftyDisk.vm_devices[self.attached_vm_id].remove(self.device_letter)
     attach_cmd = [os.path.join(util.NIFTY_PATH, 'bin/nifty-attach-volume'),
+                  '--access-key-id', "util.NIFTY_ACCESS_KEY",
+                  '--secret-key', "util.NIFTY_SECRET_KEY",
                   self.id, '--instance=%s' % self.attached_vm_id]
     vm_util.IssueRetryableCommand(attach_cmd)
 
   def Detach(self):
     """Detaches the disk from a VM."""
     detach_cmd = [os.path.join(util.NIFTY_PATH, 'bin/nifty-detach-volume'),
+                  '--access-key-id', "util.NIFTY_ACCESS_KEY",
+                  '--secret-key', "util.NIFTY_SECRET_KEY",
                   self.id]
     vm_util.IssueRetryableCommand(detach_cmd)
 

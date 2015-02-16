@@ -20,17 +20,35 @@ SSH_RETRIES = 10
 STRIPED_DEVICE = '/dev/md0'
 LOCAL_MOUNT_PATH = '/local'
 
+OS_IMAGES = {'Ubuntu 12.04': 27 }
+
+
   #def __init__(self, project, zone, machine_type, image, network):
 
 class NiftyVirtualMachine(virtual_machine.BaseVirtualMachine):
 
   #def __init__(self, vm_spec):
-  #def _Create(self):
+  def _Create(self):
+      """ Create a VM instance """
+      create_cmd = [ os.path.join(util.NIFTY_PATH,
+          "/bin/nifty-run-instances"),
+          OS_IMAGES['Ubuntu 12.04'],
+          '--access-key-id', "util.NIFTY_ACCESS_KEY",
+          '--secret-key', "util.NIFTY_SECRET_KEY",
+          "--key", "atwork",
+          "--disable-api-termination", "false",
+          "--instance-id", "perfkitbnech"
+          ]
+      vm_util.IssueRetryableCommand(create_cmd)
   def _Delete(self):
       """ Delete a VM instance """
       delete_cmd = [ os.path.join(util.NIFTY_PATH,
-          "/bin/nifty-terminate-instances"), 
+          "/bin/nifty-terminate-instances"),
+          '--access-key-id', "util.NIFTY_ACCESS_KEY",
+          '--secret-key', "util.NIFTY_SECRET_KEY",
+          "perfkitbnech"
           ]
+      vm_util.IssueRetryableCommand(delete_cmd)
   #def __repr__(self):
   #def __str__(self):
   #def CreateScratchDisk(self, disk_spec):
@@ -59,4 +77,14 @@ class NiftyVirtualMachine(virtual_machine.BaseVirtualMachine):
   #def StripeDrives(self, devices, striped_device):
   #def GetLocalDrives(self):
   #def SetupLocalDrives(self, mount_path=LOCAL_MOUNT_PATH):
+
+class DebianBasedNiftyVirtualMachine(NiftyVirtualMachine,
+                                   package_managers.AptMixin):
+  pass
+
+
+class RhelBasedNiftyVirtualMachine(NiftyVirtualMachine,
+                                 package_managers.YumMixin):
+  pass
+
 

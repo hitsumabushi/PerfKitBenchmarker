@@ -1,3 +1,5 @@
 import os
 NIFTY_PATH = os.environ['NIFTY_CLOUD_HOME']
+NIFTY_ACCESS_KEY = os.environ['NIFTY_ACCESS_KEY']
+NIFTY_SECRET_KEY = os.environ['NIFTY_SECRET_KEY']
 
